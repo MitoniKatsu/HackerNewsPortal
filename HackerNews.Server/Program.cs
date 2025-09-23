@@ -11,6 +11,23 @@ namespace HackerNews.Server
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddHttpClient("NewsClient", client =>
+            {
+                client.BaseAddress = new Uri("https://hacker-news.firebaseio.com/v0/");
+                client.DefaultRequestHeaders.Add("Accept","application/json");
+            });
+
+            builder.Services.AddCors(o =>
+            {
+                o.AddPolicy("open", o =>
+                {
+                    // normally would not do this, but do not have the origins from the hosted UI yet
+                    o.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+
+                });
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -54,6 +71,7 @@ namespace HackerNews.Server
 
             app.UseAuthorization();
 
+            app.UseCors("open");
 
             app.MapControllers();
 
