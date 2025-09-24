@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using HackerNews.Domain.Interfaces;
+using HackerNews.Domain.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HackerNews.Server.Controllers
@@ -8,17 +10,24 @@ namespace HackerNews.Server.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class NewsController : ControllerBase
+    public class NewsController(INewsService newsService) : ControllerBase
     {
+        private readonly INewsService _newsService = newsService;
+
         /// <summary>
         /// Gets the latest stories from hacker news
         /// </summary>
         /// <returns>A paginated list of news stories</returns>
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
-        public IActionResult GetLatestStories()
+        public async Task<IActionResult> GetLatestStories([FromQuery] LatestNewsRequest request)
         {
-            throw new NotImplementedException();
+            var result = await _newsService.GetLatestStories(request);
+            if (result?.Page?.Count < 1)
+            {
+                return NoContent();
+            }
+            return Ok(result);
         }
 
         /// <summary>
@@ -29,9 +38,9 @@ namespace HackerNews.Server.Controllers
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
         [Route("search")]
-        public IActionResult SearchNewStories([FromQuery] string searchString)
+        public IActionResult SearchNewStories([FromQuery] NewsSearchRequest request)
         {
-            throw new NotImplementedException($"search for {searchString}");
+            throw new NotImplementedException($"search for {request.SearchString}");
         }
     }
 }
