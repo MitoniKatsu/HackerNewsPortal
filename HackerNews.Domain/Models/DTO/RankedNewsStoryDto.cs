@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HackerNews.Domain.Models.DTO
+﻿namespace HackerNews.Domain.Models.DTO
 {
     public class RankedNewsStoryDto : NewsStoryDto
     {
+        public RankedNewsStoryDto(){}
+
         public RankedNewsStoryDto(NewsStoryDto newsStory)
         {
             Id = newsStory.Id;

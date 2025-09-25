@@ -4,7 +4,6 @@ using HackerNews.Domain.Models.DTO;
 using HackerNews.Domain.Util;
 using Microsoft.Extensions.Logging;
 using System.Net;
-using System.Text.Json;
 
 namespace HackerNews.Domain.Services
 {
@@ -33,8 +32,11 @@ namespace HackerNews.Domain.Services
                     currentStories = await RefreshStories(ids, cacheKey);
                 }
 
+                var maxPageNumber = (int)Math.Floor((double)(currentStories.Count / request.PageSize) + 1);
+                var pageNumber = request.PageNumber > maxPageNumber ? maxPageNumber : request.PageNumber;
+
                 var pageStories = currentStories
-                    .Skip((request.PageNumber - 1) * request.PageSize)
+                    .Skip((pageNumber - 1) * request.PageSize)
                     .Take(request.PageSize)
                     .ToList();
 
@@ -42,7 +44,8 @@ namespace HackerNews.Domain.Services
                 return new PagedResponseDto<NewsStoryDto>
                 {
                     Total = currentStories.Count,
-                    PageNumber = request.PageNumber,
+                    PageNumber = pageNumber,
+                    PageCount = maxPageNumber,
                     Page = pageStories
                 };
             }
@@ -79,9 +82,12 @@ namespace HackerNews.Domain.Services
                     _cacheService.Insert($"{cacheKey ?? string.Empty}_{request.SearchString}", currentRankedStories);
                 }
 
+                var maxPageNumber = (int)Math.Floor((double)(currentRankedStories.Count / request.PageSize) + 1);
+                var pageNumber = request.PageNumber > maxPageNumber ? maxPageNumber : request.PageNumber;
+
                 var pageStories = currentRankedStories
                     .OrderByDescending(o => o.SearchRanking)
-                    .Skip((request.PageNumber - 1) * request.PageSize)
+                    .Skip((pageNumber - 1) * request.PageSize)
                     .Take(request.PageSize)
                     .ToList();
 
@@ -89,7 +95,8 @@ namespace HackerNews.Domain.Services
                 return new PagedResponseDto<RankedNewsStoryDto>
                 {
                     Total = currentRankedStories.Count,
-                    PageNumber = request.PageNumber,
+                    PageNumber = pageNumber,
+                    PageCount = maxPageNumber,
                     Page = pageStories
                 };
             }

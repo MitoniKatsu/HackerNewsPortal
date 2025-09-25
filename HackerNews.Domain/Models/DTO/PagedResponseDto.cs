@@ -4,6 +4,7 @@
     {
         public int Total { get; set; }
         public int PageNumber { get; set; }
+        public int PageCount { get; set; }
         public ICollection<T> Page { get; set; } = [];
     }
 }
