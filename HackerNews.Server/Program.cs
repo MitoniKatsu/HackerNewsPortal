@@ -69,6 +69,10 @@ namespace HackerNews.Server
                 o.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xml));
             });
 
+            builder.Services.AddMemoryCache();
+
+            builder.Services.AddSingleton<ICacheService, CacheService>();
+
             var app = builder.Build();
 
             app.UseDefaultFiles();

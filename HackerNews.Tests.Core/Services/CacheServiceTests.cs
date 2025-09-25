@@ -13,7 +13,7 @@ namespace HackerNews.Tests.Core.Services
         private readonly IOptions<CacheOptions> _options = Substitute.For<IOptions<CacheOptions>>();
 
         [Fact]
-        public void Get_WhenCacheHasRecord_ReturnsRecord()
+        public void Get_WhenCacheHasRecord_ShouldReturnRecord()
         {
             var key = "test";
             var val = "value";
@@ -30,7 +30,7 @@ namespace HackerNews.Tests.Core.Services
         }
 
         [Fact]
-        public void Get_WhenCacheDoesntHasRecord_ReturnsDefault()
+        public void Get_WhenCacheDoesntHasRecord_ShouldReturnDefault()
         {
             var key = "test";
 
@@ -45,7 +45,7 @@ namespace HackerNews.Tests.Core.Services
         }
 
         [Fact]
-        public void Insert_ShouldCallCacheSetWithOptions()
+        public void Insert_WhenSlidingExpirationFalse_ShouldCallCacheSetWithAbsoluteAndSlidingExpiration()
         {
             var key = "test";
             var val = "value";
@@ -65,6 +65,30 @@ namespace HackerNews.Tests.Core.Services
             var service = new CacheService(_cache, _options);
 
             service.Insert(key, val);
+
+            _cache.Received(1).Set(key, val, entryOptions);
+        }
+
+        [Fact]
+        public void Insert_WhenSlidingExpirationFalse_ShouldCallCacheSetWithAbsolute()
+        {
+            var key = "test";
+            var val = "value";
+            var sldExp = 10;
+            var absExp = 30;
+
+            var entryOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(absExp));
+
+            _options.Value.Returns(new CacheOptions
+            {
+                SlidingExpirationSeconds = sldExp,
+                AbsoluteExpirationSeconds = absExp
+            });
+
+            var service = new CacheService(_cache, _options);
+
+            service.Insert(key, val, false);
 
             _cache.Received(1).Set(key, val, entryOptions);
         }

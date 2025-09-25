@@ -4,8 +4,8 @@
     {
         public static readonly string NEWSTYPE_STORY = "story";
 
-        // cache key prefix
-        public static readonly string CACHEKEY_PREFIX = "STORY_";
+        // cache keys
+        public static readonly string CACHEKEY_GUID = "STORIES";
 
     }
 }

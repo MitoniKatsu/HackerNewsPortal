@@ -37,9 +37,14 @@ namespace HackerNews.Server.Controllers
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
         [Route("search")]
-        public IActionResult SearchNewStories([FromQuery] NewsSearchRequest request)
+        public async Task<IActionResult> SearchNewStories([FromQuery] NewsSearchRequest request)
         {
-            throw new NotImplementedException($"search for {request.SearchString}");
+            var result = await _newsService.GetSearchRankedStories(request);
+            if (result?.Page?.Count < 1)
+            {
+                return NoContent();
+            }
+            return Ok(result);
         }
     }
 }
