@@ -1,5 +1,6 @@
 
 using HackerNews.Domain.Interfaces;
+using HackerNews.Domain.Models.Options;
 using HackerNews.Domain.Services;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -16,7 +17,7 @@ namespace HackerNews.Server
             builder.Services.AddHttpClient<INewsService, NewsService>(client =>
             {
                 client.BaseAddress = new Uri("https://hacker-news.firebaseio.com/v0/");
-                client.DefaultRequestHeaders.Add("Accept","application/json");
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
             });
 
             builder.Services.AddCors(o =>
@@ -41,6 +42,8 @@ namespace HackerNews.Server
                 {
                     o.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 });
+
+            builder.Services.Configure<CacheOptions>(builder.Configuration.GetSection(CacheOptions.Cache));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(o =>

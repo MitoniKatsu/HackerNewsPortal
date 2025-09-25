@@ -3,14 +3,7 @@ using HackerNews.Domain.Models;
 using HackerNews.Domain.Models.DTO;
 using HackerNews.Domain.Util;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace HackerNews.Domain.Services
 {
@@ -18,6 +11,7 @@ namespace HackerNews.Domain.Services
     {
         private readonly ILogger<NewsService> _logger = logger;
         private readonly HttpClient _client = client;
+
 
         private IList<int> tempIdCache = new List<int>();
         private IList<NewsStoryDto> tempCache = new List<NewsStoryDto>();
@@ -55,21 +49,23 @@ namespace HackerNews.Domain.Services
         {
             try
             {
-                var freshStoryCache = new List<NewsStoryDto>();
-                var tasks = new List<Task<NewsStoryDto>>();
+                List<NewsStoryDto> freshStoryCache = new();
+                List<Task<NewsStoryDto>> tasks = new();
 
 
                 await Task.WhenAll(tempIdCache.Select(o => GetStory(o))).ContinueWith(t =>
                 {
                     if (t.IsFaulted)
                     {
-                        _logger.LogError($"Failed to retrieve story: {t.Exception?.Message}");
-                        return;
+                        _logger.LogError($"Failed to retrieve story: {t.Exception.Message}");
+                        throw t.Exception;
                     }
 
                     if (t.IsCompletedSuccessfully && t.Result != null)
                     {
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
                         freshStoryCache = t.Result.Where(o => o != null).ToList();
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
                     }
                 });
 
@@ -82,7 +78,7 @@ namespace HackerNews.Domain.Services
             }
         }
 
-        private async Task<NewsStoryDto> GetStory(int storyId)
+        private async Task<NewsStoryDto?> GetStory(int storyId)
         {
             try
             {

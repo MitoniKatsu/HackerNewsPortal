@@ -1,6 +1,5 @@
 ﻿using HackerNews.Domain.Interfaces;
 using HackerNews.Domain.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HackerNews.Server.Controllers
@@ -15,10 +14,10 @@ namespace HackerNews.Server.Controllers
         private readonly INewsService _newsService = newsService;
 
         /// <summary>
-        /// Gets the latest stories from hacker news
+        /// Gets a paginated list of the latest stories from hacker news 
         /// </summary>
+        /// <param name="request"> a <see cref="LatestNewsRequest"/></param>
         /// <returns>A paginated list of news stories</returns>
-        /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
         public async Task<IActionResult> GetLatestStories([FromQuery] LatestNewsRequest request)
         {
@@ -31,9 +30,9 @@ namespace HackerNews.Server.Controllers
         }
 
         /// <summary>
-        /// Gets the latest stories from hacker news that match the supplied search string
+        /// Gets a paginated list of the latest stories from hacker news that match the supplied search request
         /// </summary>
-        /// <param name="searchString"></param>
+        /// <param name="request"> a <see cref="NewsSearchRequest"/></param>
         /// <returns>A paginated list of relevant news stories</returns>
         /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
