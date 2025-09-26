@@ -2,7 +2,7 @@
 {
     public class RankedNewsStoryDto : NewsStoryDto
     {
-        public RankedNewsStoryDto(){}
+        public RankedNewsStoryDto() { }
 
         public RankedNewsStoryDto(NewsStoryDto newsStory)
         {
