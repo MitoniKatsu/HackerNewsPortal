@@ -1,0 +1,44 @@
+:host {
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+}
+
+.container {
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+  color: var(--mat-sys-primary);
+  mat-card {
+    flex: 1;
+  }
+  mat-card-content {
+    display: flex;
+    flex-flow: column;
+    gap: 10px;
+    overflow: auto;
+    padding-bottom: 10px;
+  }
+  mat-card-content.with-paginator {
+    height: calc(100vh - 176px);
+  }
+  mat-card-content.without-paginator {
+    height: calc(100vh - 104px);
+  }
+}
+
+.center {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner-box {
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-around;
+  align-items: center;
+}

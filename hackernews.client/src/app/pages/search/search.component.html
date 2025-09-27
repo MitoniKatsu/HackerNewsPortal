@@ -1,0 +1,51 @@
+<div class="container">
+  <mat-card appearance="outlined">
+    <mat-card-content [class]="pagination()">
+      <mat-form-field>
+        <mat-label>Search</mat-label>
+        <input
+          matInput
+          placeholder=""
+          [(ngModel)]="searchString"
+          (change)="handleSearchSubmit()"
+        />
+        <mat-icon matPrefix>search</mat-icon>
+        @if (searchString() !== '') {
+        <button
+          matSuffix
+          mat-icon-button
+          aria-label="Clear"
+          (click)="searchString.set('')"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+        }
+      </mat-form-field>
+      @if (loading() === false) { @if (searchSubmitted() === true &&
+      (stories().length) === 0) {
+      <span class="center">No Results Found</span> }@else {@for (story of
+      stories(); track story.id) {
+      <app-news-story [title]="story.title" [url]="story.url" />
+      } }} @else {<app-loading />}
+    </mat-card-content>
+    @if ((stories().length) > 0) {
+    <mat-card-actions class="paginator">
+      <div class="center">
+        <mat-paginator
+          [length]="length()"
+          [pageSize]="pageSize()"
+          [pageSizeOptions]="[10, 25, 50]"
+          (page)="handlePageEvent($event)"
+          aria-label="Select page"
+        >
+        </mat-paginator>
+      </div>
+    </mat-card-actions>
+    }
+  </mat-card>
+</div>
+<ng-template #loadingSpinner>
+  <div class="spinner-box">
+    <mat-spinner />
+  </div>
+</ng-template>

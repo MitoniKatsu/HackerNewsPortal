@@ -1,38 +1,29 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-
-interface WeatherForecast {
-  date: string;
-  temperatureC: number;
-  temperatureF: number;
-  summary: string;
-}
+import { Component, computed, OnInit, signal, Signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { RouterOutlet } from '@angular/router';
+import { Store } from '@ngxs/store';
+import { NewsState } from './store/news/news.state';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  standalone: false,
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.scss',
+  imports: [CommonModule, NavbarComponent, RouterOutlet],
 })
 export class AppComponent implements OnInit {
-  public forecasts: WeatherForecast[] = [];
+  constructor(private store: Store) {}
 
-  constructor(private http: HttpClient) {}
+  storedTheme: Signal<string> = signal('dark');
+  theme = computed(() => {
+    if (this.storedTheme() === 'dark') {
+      return 'dark-mode';
+    } else {
+      return 'light-mode';
+    }
+  });
 
   ngOnInit() {
-    this.getForecasts();
+    this.storedTheme = this.store.selectSignal(NewsState.getTheme);
   }
-
-  getForecasts() {
-    this.http.get<WeatherForecast[]>('/weatherforecast').subscribe(
-      (result) => {
-        this.forecasts = result;
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  }
-
-  title = 'hackernews.client';
 }

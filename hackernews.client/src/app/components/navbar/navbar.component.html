@@ -1,0 +1,17 @@
+<mat-toolbar>
+  <button mat-icon-button (click)="handleTopStoriesClicked()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Hacker News Portal</span>
+  <div class="toolbar-row">
+    <button mat-raised-button (click)="handleTopStoriesClicked()">
+      <mat-icon>newspaper</mat-icon>
+      <span>Top Stories</span>
+    </button>
+    <button mat-raised-button (click)="handleSearchClicked()">
+      <mat-icon>search</mat-icon>
+      <span>Search</span>
+    </button>
+    <app-theme-toggle />
+  </div>
+</mat-toolbar>

@@ -1,0 +1,13 @@
+:host {
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+}
+
+.spinner-box {
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-around;
+  align-items: center;
+}

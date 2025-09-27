@@ -1,0 +1,30 @@
+@use "@angular/material" as mat;
+
+html {
+  color-scheme: dark;
+  @include mat.theme(
+    (
+      color: mat.$green-palette,
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+.dark-mode {
+  color-scheme: dark;
+}
+.light-mode {
+  color-scheme: light;
+}
+
+html,
+body {
+  height: 100vh;
+  display: flex;
+  flex-flow: column;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
