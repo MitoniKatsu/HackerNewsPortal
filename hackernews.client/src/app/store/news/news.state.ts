@@ -91,8 +91,8 @@ export class NewsState {
   }
 
   @Action(NewsActions.ResetSearch)
-  setLoadingSearch(ctx: StateContext<NewsStateModel>) {
-    return ctx.patchState({
+  resetSearch(ctx: StateContext<NewsStateModel>) {
+    ctx.patchState({
       loadingSearch: false,
       rankedNews: null,
     });
