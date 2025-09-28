@@ -1,1 +1,14 @@
 # HackerNews
+- This is a sample application to demonstrate some skills in .Net 8 and Angular 19
+- On loading the home page, the UI will request a page of the latest news from the backend
+  - The backend will return the results immediately if they are cached
+  - If results are not cached, they will be fetched from the Hacker News API (https://github.com/HackerNews/API)
+  - The cache has a sliding expiration of 5 minutes, and an absolute expiration of 1 hour
+- After the initial latest new is loaded, the user can page through the results, or search them on the search page
+  - Search results are in order of relevance to the search terms, and by order in the latest news results
+  - Only results that match at least one token (word) of the search terms will be returned
+  - If no results are found, the UI will display as such
+- If launching this locally, you will have to change the baseUrl in the NewsService.ts
+  - Replace the empty string in baseUrl with the baseUrl your backend API is running on ie: "https://localhost:7278" (no trailing slash)
+  - This is left empty on release deployment, as both run at the same base url
+  - This issue will be fixed once I figure out why Angular is nt following the file replacement instructions in Angular.json for the Environments files
