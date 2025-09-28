@@ -9,6 +9,6 @@
   - Only results that match at least one token (word) of the search terms will be returned
   - If no results are found, the UI will display as such
 - If launching this locally, you will have to change the baseUrl in the NewsService.ts
-  - Replace the empty string in baseUrl with the baseUrl your backend API is running on
+  - Replace the empty string in baseUrl with the baseUrl your backend API is running on ie: "https://localhost:7278" (no trailing slash)
   - This is left empty on release deployment, as both run at the same base url
   - This issue will be fixed once I figure out why Angular is nt following the file replacement instructions in Angular.json for the Environments files
