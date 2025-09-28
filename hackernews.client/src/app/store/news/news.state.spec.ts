@@ -2,24 +2,36 @@ import { TestBed } from '@angular/core/testing';
 import { provideStore, Store } from '@ngxs/store';
 import { NewsState, NewsStateModel } from './news.state';
 import { NewsService } from '../../services/news.service';
-import { HttpResponse, provideHttpClient } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpResponse,
+  provideHttpClient,
+} from '@angular/common/http';
 import { NewsActions } from './news.actions';
-import { of } from 'rxjs';
+import { catchError, of, throwError } from 'rxjs';
 import { PagedResponse } from '../../models/paged-response.model';
 import { NewsStory } from '../../models/news-story.model';
 import { Signal } from '@angular/core';
 import { RankedNewsStory } from '../../models/ranked-news-story.model';
+import { provideToastr, ToastrService } from 'ngx-toastr';
 
 describe('News store', () => {
   let newsService: NewsService;
   let store: Store;
+  let toast: ToastrService;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideStore([NewsState]), provideHttpClient(), NewsService],
+      providers: [
+        provideStore([NewsState]),
+        provideHttpClient(),
+        NewsService,
+        provideToastr(),
+      ],
     });
 
     store = TestBed.inject(Store);
     newsService = TestBed.inject(NewsService);
+    toast = TestBed.inject(ToastrService);
   });
 
   describe('NewsActions.GetLatestNews', () => {
@@ -44,30 +56,31 @@ describe('News store', () => {
     });
 
     it('should not patch state with response when response is not ok', (done) => {
-      const fakeResponse = new HttpResponse<PagedResponse<NewsStory>>({
-        status: 400,
-        statusText: 'an error has occurred',
-      });
-      spyOn(newsService, 'getLatestNews').and.returnValue(of(fakeResponse));
-      spyOn(console, 'log');
+      const error = 'It Broke';
+      spyOn(newsService, 'getLatestNews').and.returnValue(
+        throwError(() => new Error(error))
+      );
+      spyOn(toast, 'error');
       store
         .dispatch(
           new NewsActions.GetLatestNews({ pageNumber: 1, pageSize: 10 })
         )
-        .subscribe(() => {
-          expect(newsService.getLatestNews).toHaveBeenCalledOnceWith(1, 10);
-          const latestNewsState: Signal<PagedResponse<NewsStory> | null> =
-            store.selectSignal(NewsState.getLatestNewsPage);
-          const loadingState: Signal<boolean> = store.selectSignal(
-            NewsState.getLoadingHome
-          );
-          expect(latestNewsState()).toBe(null);
-          expect(loadingState()).toBe(false);
-          expect(console.log).toHaveBeenCalledWith(
-            'error',
-            'an error has occurred'
-          );
-          done();
+        .subscribe({
+          error: () => {
+            expect(newsService.getLatestNews).toHaveBeenCalledOnceWith(1, 10);
+            const latestNewsState: Signal<PagedResponse<NewsStory> | null> =
+              store.selectSignal(NewsState.getLatestNewsPage);
+            const loadingState: Signal<boolean> = store.selectSignal(
+              NewsState.getLoadingHome
+            );
+            expect(latestNewsState()).toBe(null);
+            expect(loadingState()).toBe(false);
+            expect(toast.error).toHaveBeenCalledWith(
+              'Unable to retrieve Latest News',
+              'An Error Has Occurred'
+            );
+            done();
+          },
         });
     });
   });
@@ -102,12 +115,11 @@ describe('News store', () => {
     });
 
     it('should not patch state with response when response is not ok', (done) => {
-      const fakeResponse = new HttpResponse<PagedResponse<RankedNewsStory>>({
-        status: 400,
-        statusText: 'an error has occurred',
-      });
-      spyOn(newsService, 'getRankedNews').and.returnValue(of(fakeResponse));
-      spyOn(console, 'log');
+      const error = 'It Broke';
+      spyOn(newsService, 'getRankedNews').and.returnValue(
+        throwError(() => new Error(error))
+      );
+      spyOn(toast, 'error');
       store
         .dispatch(
           new NewsActions.GetRankedNews({
@@ -116,24 +128,26 @@ describe('News store', () => {
             searchString: 'test',
           })
         )
-        .subscribe(() => {
-          expect(newsService.getRankedNews).toHaveBeenCalledOnceWith(
-            1,
-            10,
-            'test'
-          );
-          const rankedNewsState: Signal<PagedResponse<RankedNewsStory> | null> =
-            store.selectSignal(NewsState.getRankedNewsPage);
-          const loadingState: Signal<boolean> = store.selectSignal(
-            NewsState.getLoadingSearch
-          );
-          expect(rankedNewsState()).toBe(null);
-          expect(loadingState()).toBe(false);
-          expect(console.log).toHaveBeenCalledWith(
-            'error',
-            'an error has occurred'
-          );
-          done();
+        .subscribe({
+          error: () => {
+            expect(newsService.getRankedNews).toHaveBeenCalledOnceWith(
+              1,
+              10,
+              'test'
+            );
+            const rankedNewsState: Signal<PagedResponse<RankedNewsStory> | null> =
+              store.selectSignal(NewsState.getRankedNewsPage);
+            const loadingState: Signal<boolean> = store.selectSignal(
+              NewsState.getLoadingSearch
+            );
+            expect(rankedNewsState()).toBe(null);
+            expect(loadingState()).toBe(false);
+            expect(toast.error).toHaveBeenCalledWith(
+              'Unable to retrieve results',
+              'An Error Has Occurred'
+            );
+            done();
+          },
         });
     });
   });

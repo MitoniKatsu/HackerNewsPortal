@@ -9,7 +9,8 @@ import {
   PaginationWithSearch,
 } from '../../models/pagination.model';
 import { NewsService } from '../../services/news.service';
-import { tap } from 'rxjs';
+import { catchError, tap } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 export interface NewsStateModel {
   theme: string;
@@ -31,7 +32,7 @@ export interface NewsStateModel {
 })
 @Injectable()
 export class NewsState {
-  constructor(private newsService: NewsService) {}
+  constructor(private newsService: NewsService, private toast: ToastrService) {}
   @Action(NewsActions.GetLatestNews)
   getLatestNews(
     ctx: StateContext<NewsStateModel>,
@@ -43,6 +44,16 @@ export class NewsState {
     return this.newsService
       .getLatestNews(action.payload.pageNumber, action.payload.pageSize)
       .pipe(
+        catchError((err) => {
+          this.toast.error(
+            'Unable to retrieve Latest News',
+            'An Error Has Occurred'
+          );
+          ctx.patchState({
+            loadingHome: false,
+          });
+          throw err;
+        }),
         tap((res) => {
           if (res.ok) {
             ctx.patchState({
@@ -53,7 +64,6 @@ export class NewsState {
             ctx.patchState({
               loadingHome: false,
             });
-            console.log('error', res.statusText);
           }
         })
       );
@@ -74,6 +84,16 @@ export class NewsState {
         action.payload.searchString
       )
       .pipe(
+        catchError((err) => {
+          this.toast.error(
+            'Unable to retrieve results',
+            'An Error Has Occurred'
+          );
+          ctx.patchState({
+            loadingSearch: false,
+          });
+          throw err;
+        }),
         tap((res) => {
           if (res.ok) {
             ctx.patchState({
@@ -84,7 +104,6 @@ export class NewsState {
             ctx.patchState({
               loadingSearch: false,
             });
-            console.log('error', res.statusText);
           }
         })
       );

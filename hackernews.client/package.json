@@ -13,6 +13,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^19.2.15",
     "@angular/cdk": "^19.2.19",
     "@angular/common": "^19.2.0",
     "@angular/compiler": "^19.2.0",
@@ -25,6 +26,7 @@
     "@ngxs/devtools-plugin": "^19.0.0",
     "@ngxs/store": "^19.0.0",
     "jest-editor-support": "*",
+    "ngx-toastr": "^19.1.0",
     "run-script-os": "*",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
