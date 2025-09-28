@@ -35,10 +35,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.scss",
-              "./node_modules/ngx-toastr/toastr.css"
-            ],
+            "styles": ["src/styles.scss", "node_modules/ngx-toastr/toastr.css"],
             "scripts": []
           },
           "configurations": {
@@ -95,10 +92,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.scss",
-              "./node_modules/ngx-toastr/toastr.css"
-            ],
+            "styles": ["src/styles.scss", "node_modules/ngx-toastr/toastr.css"],
             "scripts": [],
             "karmaConfig": "karma.conf.js"
           }

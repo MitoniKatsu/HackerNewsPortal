@@ -2,9 +2,9 @@
   <PropertyGroup>
     <StartupCommand>npm start</StartupCommand>
     <JavaScriptTestFramework>Jasmine</JavaScriptTestFramework>
-    <!-- Allows the build (or compile) script located on package.json to run on Build -->
+    <ProductionBuildCommand>npm run build:prod</ProductionBuildCommand>
+    <BuildCommand>npm run build</BuildCommand>
     <ShouldRunBuildScript>false</ShouldRunBuildScript>
-    <!-- Folder where production build objects will be placed -->
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\hackernews.client\browser\</BuildOutputFolder>
   </PropertyGroup>
 </Project>
